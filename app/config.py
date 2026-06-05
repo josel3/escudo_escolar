@@ -26,7 +26,7 @@ class Settings:
     NOTA_AMARILLA: float = 4.0
 
     # Rutas
-    MEDIA_DIR: Path = BASE_DIR / os.getenv("MEDIA_DIR", "media")
+    MEDIA_DIR: Path = Path(os.getenv("MEDIA_DIR", "media"))
     TEMPLATES_DIR: Path = BASE_DIR / "templates"
     STATIC_DIR: Path = BASE_DIR / "static"
 
