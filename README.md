@@ -68,11 +68,6 @@ scripts/seed.py        # Datos de prueba
 definitions/           # PDFs de diseño
 ```
 
-## Documentación de diseño
-
-- `definitions/documento_diseno_escudo_escolar.pdf` (V1)
-- `definitions/documento_diseno_escudo_escolar_v2.pdf` (V2)
-
 ## Variables opcionales
 
 - `GEMINI_API_KEY` — Tutor IA conversacional
