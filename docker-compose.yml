@@ -1,0 +1,18 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: escudoescolar-mysql
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: escudoescolar
+      MYSQL_USER: escudo_user
+      MYSQL_PASSWORD: escudo_pass
+    ports:
+      - "3306:3306"
+    volumes:
+      - escudo_mysql_data:/var/lib/mysql
+    command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
+
+volumes:
+  escudo_mysql_data:
