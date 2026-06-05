@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block title %}Cuaderno{% endblock %}
+{% block page_title %}Cuaderno de notificaciones{% endblock %}
+{% set active = 'cuaderno' %}
+{% block content %}
+<div class="card">
+  {% if notificaciones %}
+  <table>
+    <thead>
+      <tr><th>Fecha</th><th>Tipo</th><th>Título</th><th>De</th></tr>
+    </thead>
+    <tbody>
+      {% for n in notificaciones %}
+      <tr>
+        <td>{{ n.fecha_envio | fmt_fecha }}</td>
+        <td><span class="badge">{{ n.tipo_notificacion.value }}</span></td>
+        <td><strong>{{ n.titulo }}</strong><br><small>{{ n.contenido[:120] }}{% if n.contenido|length > 120 %}…{% endif %}</small></td>
+        <td>{{ n.emisor.nombre if n.emisor else '—' }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p>No tenés notificaciones.</p>
+  {% endif %}
+</div>
+{% endblock %}

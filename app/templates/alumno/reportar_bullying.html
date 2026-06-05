@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Reportar bullying{% endblock %}
+{% block page_title %}Reportar situación de acoso{% endblock %}
+{% set active = 'bullying' %}
+{% block content %}
+<div class="card">
+  <p>Tu reporte llegará al equipo directivo. Podés enviarlo de forma anónima.</p>
+  <form method="post" action="/alumno/reportar-bullying">
+    <label for="descripcion">Describí lo ocurrido</label>
+    <textarea id="descripcion" name="descripcion" required minlength="10"></textarea>
+    <label><input type="checkbox" name="anonimo" value="true" checked> Enviar de forma anónima</label>
+    <p style="margin-top:1rem"><button type="submit" class="btn">Enviar reporte</button></p>
+  </form>
+</div>
+{% endblock %}

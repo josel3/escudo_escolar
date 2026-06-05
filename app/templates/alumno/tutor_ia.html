@@ -1,0 +1,323 @@
+{% extends "base.html" %}
+{% block title %}Tutor IA{% endblock %}
+{% block page_title %}Tutor IA{% endblock %}
+{% set active = 'tutor-ia' %}
+{% block content %}
+
+{# Mostrar la tarjeta del historial SOLO si hay mensajes #}
+{% if historial and historial|length > 0 %}
+<div class="card chat-container" id="chat-container">
+  {% for msg in historial %}
+  <div class="chat-bubble {% if msg.rol_mensaje.value == 'USER' %}chat-user{% else %}chat-model{% endif %}">
+    <strong>{% if msg.rol_mensaje.value == 'USER' %}Vos{% else %}Tutor{% endif %}</strong>
+    
+    {# Si es el modelo y viene con audio, aplicamos el colapso de texto estilo WhatsApp #}
+    {% if msg.rol_mensaje.value != 'USER' and msg.audio_url %}
+      <audio controls src="{{ msg.audio_url }}" class="audio-response">Tu navegador no reproduce audio.</audio>
+      <div class="chat-text-collapsible">
+        <p class="chat-text-content">{{ msg.texto_contenido }}</p>
+      </div>
+      <button type="button" class="btn-toggle-text">▼ Leer texto completo</button>
+    {% else %}
+      <p>{{ msg.texto_contenido }}</p>
+      {% if msg.audio_url %}
+      <audio controls src="{{ msg.audio_url }}">Tu navegador no reproduce audio.</audio>
+      {% endif %}
+    {% endif %}
+  </div>
+  {% endfor %}
+</div>
+{% endif %}
+
+{# Contenedor principal de la caja de ingreso de mensajes #}
+<div class="card chat-input-card">
+  <form id="chat-form" onsubmit="return false;">
+    
+    <div id="chat-loader" class="chat-loader" style="display: none;">
+      <div class="spinner"></div>
+      <span>El Tutor está procesando tu respuesta... por favor esperá.</span>
+    </div>
+
+    <div class="chat-input-row" id="input-row-container">
+      <textarea id="mensaje" name="mensaje" rows="1" placeholder="Escribí tu consulta..."></textarea>
+      
+      <div class="chat-actions">
+        <label for="audio" class="btn-icon" id="label-audio" title="Subir nota de voz">
+          <span>🎵</span>
+          <input type="file" id="audio" name="audio" accept="audio/*" style="display: none;">
+        </label>
+
+        <button type="button" id="btn-grabar" class="btn-icon" title="Grabar audio">🎤</button>
+
+        <label class="checkbox-text-only" id="label-solo-texto" title="Solo responder con texto">
+          <input type="checkbox" id="solo_texto" name="solo_texto" value="true"> 📝
+        </label>
+
+        <button type="button" id="btn-enviar" class="btn-send" title="Enviar">✈️</button>
+      </div>
+    </div>
+  </form>
+
+  <div class="chat-footer-actions" id="footer-actions-container">
+    <form method="post" action="/alumno/tutor-ia/limpiar">
+      <button type="submit" id="btn-limpiar" class="btn-link-danger" title="Limpiar conversación">🗑️ Limpiar historial</button>
+    </form>
+  </div>
+</div>
+
+{# Librería Marked para renderizar Markdown en el frontend #}
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const textarea = document.getElementById('mensaje');
+  const btnGrabar = document.getElementById('btn-grabar');
+  const btnEnviar = document.getElementById('btn-enviar');
+  const chatLoader = document.getElementById('chat-loader');
+  const inputRowContainer = document.getElementById('input-row-container');
+  const footerActionsContainer = document.getElementById('footer-actions-container');
+  const btnLimpiar = document.getElementById('btn-limpiar');
+  const inputAudio = document.getElementById('audio');
+  const checkboxSoloTexto = document.getElementById('solo_texto');
+  
+  let mediaRecorder = null;
+  let isRecording = false;
+  let audioChunks = [];
+  let audioBlobReal = null; // Guardará el Blob real de grabación del mic
+
+ //opcione para markdown
+ marked.setOptions({
+    breaks: true,
+    gfm: true 
+  });
+
+  // --- 1. Expandir/Colapsar y Convertir Markdown del Tutor usando Marked ---
+  const textosCargados = document.querySelectorAll('.chat-text-content');
+  textosCargados.forEach(p => {
+    const textoOriginal = p.textContent;
+    
+    // marked.parse() convierte TODO a HTML perfectamente estructurado de forma segura
+    p.innerHTML = marked.parse(textoOriginal);
+  });
+
+  // Procesamos también los mensajes del tutor que no tengan audio (burbujas normales de texto)
+  document.querySelectorAll('.chat-model > p').forEach(p => {
+    // Si no es un contenedor colapsable pero tiene markdown, lo parseamos
+    if (!p.classList.contains('chat-text-content')) {
+      p.innerHTML = marked.parse(p.textContent);
+    }
+  });
+
+  // --- Lógica del botón toggle ---
+  const toggleButtons = document.querySelectorAll('.btn-toggle-text');
+  toggleButtons.forEach(btn => {
+    const container = btn.previousElementSibling;
+    const textContent = container.querySelector('.chat-text-content');
+
+    // innerText nos da el largo real del texto ya renderizado libre de tags HTML
+    if (textContent && textContent.innerText.trim().length < 80) {
+      container.classList.add('is-expanded');
+      btn.style.display = 'none';
+    }
+
+    btn.addEventListener('click', () => {
+      const isExpanded = container.classList.toggle('is-expanded');
+      btn.innerHTML = isExpanded ? '▲ Ocultar texto' : '▼ Leer texto completo';
+      
+      const chatContainer = document.getElementById('chat-container');
+      if (chatContainer && isExpanded) {
+        chatContainer.scrollTop = chatContainer.scrollHeight;
+      }
+    });
+  });
+
+  // Auto-scroll inicial
+  const chatContainer = document.getElementById('chat-container');
+  if (chatContainer) {
+     chatContainer.scrollTop = chatContainer.scrollHeight;
+  }
+
+  // Si sube un audio nativo por el botón 🎵, reseteamos el del mic
+  inputAudio.addEventListener('change', () => {
+    if (inputAudio.files.length > 0) {
+      audioBlobReal = null; 
+    }
+  });
+
+  // --- 2. Auto-resize del Textarea ---
+  textarea.addEventListener('input', function() {
+    this.style.height = 'auto';
+    const maxHeight = window.innerHeight * 0.5;
+    const nextHeight = this.scrollHeight;
+    this.style.height = (nextHeight > maxHeight ? maxHeight : nextHeight) + 'px';
+    this.style.overflowY = nextHeight > maxHeight ? 'auto' : 'hidden';
+  });
+
+  // --- 3. Envío Asíncrono Controlado (Solución Definitiva) ---
+  async function procesarYEnviarFormulario() {
+    // Si se hace click en enviar mientras se está grabando, detenemos el micro primero
+    if (isRecording) {
+      if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+        mediaRecorder.onstop = () => {
+          audioBlobReal = new Blob(audioChunks, { type: 'audio/ogg; codecs=opus' });
+          mediaRecorder.stream.getTracks().forEach(track => track.stop());
+          isRecording = false;
+          resetMicButton();
+          ejecutarFetch(); // Llama al envío una vez generado el blob
+        };
+        mediaRecorder.stop();
+        return;
+      }
+    }
+    
+    ejecutarFetch();
+  }
+
+  async function ejecutarFetch() {
+    const textoInput = textarea.value.trim();
+    const tieneArchivoSubido = inputAudio.files.length > 0;
+
+    // Validación guardrail idéntica al backend: si no hay nada, no mandamos
+    if (!textoInput && !tieneArchivoSubido && !audioBlobReal) {
+      alert("Por favor, escribí un mensaje o grabá un audio antes de enviar.");
+      return;
+    }
+
+    // Bloqueo visual de UI
+    chatLoader.style.display = 'flex';
+    inputRowContainer.style.opacity = '0.3';
+    textarea.disabled = true;
+    btnGrabar.disabled = true;
+    btnEnviar.disabled = true;
+    if (btnLimpiar) btnLimpiar.disabled = true;
+    if (footerActionsContainer) footerActionsContainer.style.pointerEvents = 'none';
+
+    // Construimos el FormData dinámicamente campo por campo
+    const formData = new FormData();
+    
+    if (textoInput) {
+      formData.append('mensaje', textoInput);
+    }
+    
+    if (checkboxSoloTexto.checked) {
+      formData.append('solo_texto', 'true');
+    }
+
+    // Evaluamos el canal de audio a enviar
+    if (audioBlobReal) {
+      // Mandamos la grabación del micrófono
+      formData.append('audio', audioBlobReal, 'grabacion_mic.ogg');
+    } else if (tieneArchivoSubido) {
+      // Mandamos el archivo subido manualmente por el buscador (🎵)
+      formData.append('audio', inputAudio.files[0]);
+    }
+
+    try {
+      const response = await fetch('/alumno/tutor-ia', {
+        method: 'POST',
+        body: formData
+      });
+
+      if (response.ok) {
+        // Recargamos la ventana de forma limpia para reflejar los cambios en el historial renderizado
+        textarea.value = '';
+        window.location.reload();
+      } else {
+        const errorData = await response.json();
+        alert("Error del servidor: " + (errorData.detail || "No se pudo procesar la consulta."));
+        restaurarUI();
+      }
+    } catch (err) {
+      console.error("Error en la petición fetch:", err);
+      alert("Hubo un problema de conexión al enviar el mensaje.");
+      restaurarUI();
+    }
+  }
+
+  function restaurarUI() {
+    chatLoader.style.display = 'none';
+    inputRowContainer.style.opacity = '1';
+    textarea.disabled = false;
+    btnGrabar.disabled = false;
+    btnEnviar.disabled = false;
+    if (btnLimpiar) btnLimpiar.disabled = false;
+    if (footerActionsContainer) footerActionsContainer.style.pointerEvents = 'auto';
+  }
+
+  // Vinculamos el click del botón enviar al flujo controlado
+  btnEnviar.addEventListener('click', procesarYEnviarFormulario);
+
+  // Evita que un submit por teclado "Enter" rompa el flujo
+  textarea.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      procesarYEnviarFormulario();
+    }
+  });
+
+
+  // --- 4. Gestión del Micrófono ---
+  const isSecureContext = window.isSecureContext || window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+
+  if (!isSecureContext) {
+    btnGrabar.disabled = true;
+    btnGrabar.style.opacity = '0.4';
+    btnGrabar.title = "Grabación deshabilitada (Requiere entorno seguro HTTPS o localhost)";
+  } else {
+    btnGrabar.addEventListener('click', async () => {
+      if (isRecording) {
+        stopRecording();
+        return;
+      }
+
+      if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+        alert('Tu navegador no soporta la grabación de audio directa.');
+        return;
+      }
+
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+        isRecording = true;
+        btnGrabar.classList.add('is-recording');
+        btnGrabar.title = "Detener grabación";
+        btnGrabar.innerHTML = "🛑";
+
+        mediaRecorder = new MediaRecorder(stream);
+        audioChunks = [];
+        
+        mediaRecorder.ondataavailable = (e) => {
+          if (e.data.size > 0) audioChunks.push(e.data);
+        };
+
+        mediaRecorder.onstop = () => {
+          audioBlobReal = new Blob(audioChunks, { type: 'audio/ogg; codecs=opus' });
+          inputAudio.value = ""; // Reseteamos el selector de archivo por si había uno previo
+          stream.getTracks().forEach(track => track.stop());
+        };
+
+        mediaRecorder.start();
+
+      } catch (error) {
+        console.error('Error al acceder al micrófono:', error);
+        alert('No se pudo acceder al micrófono.');
+        resetMicButton();
+      }
+    });
+  }
+
+  function stopRecording() {
+    if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+      mediaRecorder.stop();
+    }
+    resetMicButton();
+  }
+
+  function resetMicButton() {
+    isRecording = false;
+    btnGrabar.classList.remove('is-recording');
+    btnGrabar.title = "Grabar audio";
+    btnGrabar.innerHTML = "🎤";
+  }
+});
+</script>
+{% endblock %}

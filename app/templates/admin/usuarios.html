@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block page_title %}Usuarios{% endblock %}
+{% set active = 'usuarios' %}
+{% block content %}
+<p><a href="/admin/usuarios/nuevo" class="btn">Nuevo usuario</a></p>
+<form method="get" class="card">
+  <input type="text" name="q" value="{{ q }}" placeholder="Buscar">
+  <select name="rol">
+    <option value="">Todos los roles</option>
+    {% for r in roles %}<option value="{{ r }}" {% if rol_filtro == r %}selected{% endif %}>{{ r }}</option>{% endfor %}
+  </select>
+  <button type="submit" class="btn btn-sm">Filtrar</button>
+</form>
+<div class="card">
+  <table>
+    <tr><th>Nombre</th><th>Email</th><th>Rol</th><th>Activo</th><th></th></tr>
+    {% for u in usuarios %}
+    <tr>
+      <td>{{ u.nombre }}</td>
+      <td>{{ u.email }}</td>
+      <td>{{ u.rol.value }}</td>
+      <td>{% if u.activo %}Sí{% else %}No{% endif %}</td>
+      <td>
+        <form method="post" action="/admin/usuarios/{{ u.id }}/toggle-activo" style="display:inline">
+          <button type="submit" class="btn btn-secondary btn-sm">{% if u.activo %}Desactivar{% else %}Activar{% endif %}</button>
+        </form>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

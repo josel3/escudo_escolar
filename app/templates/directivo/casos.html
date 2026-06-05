@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block page_title %}Casos de bullying{% endblock %}
+{% set active = 'casos' %}
+{% block content %}
+<div class="card">
+  {% for c in casos %}
+  <article style="padding:1rem 0;border-bottom:1px solid #e5e7eb">
+    <strong>{{ c.titulo }}</strong>
+    {% if c.firmado %}<span class="badge badge-verde">Resuelto</span>{% else %}<span class="badge badge-rojo">Abierto</span>{% endif %}
+    <p>{{ c.contenido }}</p>
+    <small>{{ c.fecha_envio | fmt_fecha }}</small>
+    {% if not c.firmado %}
+    <form method="post" action="/directivo/casos/{{ c.id }}/resolver" style="margin-top:0.5rem">
+      <button type="submit" class="btn btn-sm">Marcar como resuelto</button>
+    </form>
+    {% endif %}
+  </article>
+  {% else %}<p>No hay casos registrados.</p>{% endfor %}
+</div>
+{% endblock %}

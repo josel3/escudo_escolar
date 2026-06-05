@@ -1,0 +1,78 @@
+{% macro alertas(success='', error='') %}
+{% if success %}
+<div class="alert alert-success">{{ success | replace('+', ' ') }}</div>
+{% endif %}
+{% if error %}
+<div class="alert alert-error">{{ error | replace('+', ' ') }}</div>
+{% endif %}
+{% endmacro %}
+
+{% macro nav_sidebar(user, active='') %}
+<aside class="sidebar">
+  <div class="brand">🛡️ EscudoEscolar</div>
+  <nav>
+    {% set rol = user.rol.value %}
+    {% if rol == 'ALUMNO' %}
+    <a href="/alumno/dashboard" class="{% if active == 'dashboard' %}active{% endif %}">Dashboard</a>
+    <a href="/alumno/cuaderno" class="{% if active == 'cuaderno' %}active{% endif %}">Cuaderno</a>
+    <a href="/alumno/tutor-ia" class="{% if active == 'tutor-ia' %}active{% endif %}">Tutor IA</a>
+    <a href="/alumno/mis-notas" class="{% if active == 'notas' %}active{% endif %}">Mis notas</a>
+    <a href="/alumno/tareas" class="{% if active == 'tareas' %}active{% endif %}">Tareas</a>
+    <a href="/alumno/reportar-bullying" class="{% if active == 'bullying' %}active{% endif %}">Ayuda / Bullying</a>
+    {% elif rol == 'TUTOR' %}
+    <a href="/tutor/dashboard" class="{% if active == 'dashboard' %}active{% endif %}">Dashboard</a>
+    <a href="/tutor/cuaderno" class="{% if active == 'cuaderno' %}active{% endif %}">Cuaderno</a>
+    <a href="/tutor/solicitar-reunion" class="{% if active == 'reunion' %}active{% endif %}">Solicitar reunión</a>
+    {% elif rol == 'DOCENTE' %}
+    <a href="/docente/dashboard" class="{% if active == 'dashboard' %}active{% endif %}">Dashboard</a>
+    <a href="/docente/carga-notas" class="{% if active == 'notas' %}active{% endif %}">Carga de notas</a>
+    <a href="/docente/asistencia" class="{% if active == 'asistencia' %}active{% endif %}">Asistencia</a>
+    <a href="/docente/tareas" class="{% if active == 'tareas' %}active{% endif %}">Tareas</a>
+    <a href="/docente/cuaderno" class="{% if active == 'cuaderno' %}active{% endif %}">Cuaderno</a>
+    <a href="/docente/reuniones" class="{% if active == 'reuniones' %}active{% endif %}">Reuniones</a>
+    {% elif rol == 'DIRECTIVO' %}
+    <a href="/directivo/dashboard" class="{% if active == 'dashboard' %}active{% endif %}">Dashboard</a>
+    <a href="/directivo/alumnos" class="{% if active == 'alumnos' %}active{% endif %}">Alumnos</a>
+    <a href="/directivo/estadisticas" class="{% if active == 'stats' %}active{% endif %}">Estadísticas</a>
+    <a href="/directivo/casos" class="{% if active == 'casos' %}active{% endif %}">Casos bullying</a>
+    <a href="/directivo/comunicados" class="{% if active == 'comunicados' %}active{% endif %}">Comunicados</a>
+    {% elif rol == 'ADMIN' %}
+    <a href="/admin/dashboard" class="{% if active == 'dashboard' %}active{% endif %}">Dashboard</a>
+    <a href="/admin/usuarios" class="{% if active == 'usuarios' %}active{% endif %}">Usuarios</a>
+    <a href="/admin/cursos" class="{% if active == 'cursos' %}active{% endif %}">Cursos</a>
+    <a href="/admin/materias" class="{% if active == 'materias' %}active{% endif %}">Materias</a>
+    <a href="/admin/asignaciones" class="{% if active == 'asignaciones' %}active{% endif %}">Asignaciones</a>
+    <a href="/admin/inscripciones" class="{% if active == 'inscripciones' %}active{% endif %}">Inscripciones</a>
+    <a href="/admin/ticketera" class="{% if active == 'ticketera' %}active{% endif %}">Ticketera</a>
+    {% endif %}
+  </nav>
+</aside>
+{% endmacro %}
+
+{% macro layout_page(user, active, title, success='', error='') %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ title }} — EscudoEscolar</title>
+  <link rel="stylesheet" href="/static/css/main.css">
+</head>
+<body>
+<div class="layout">
+  {{ nav_sidebar(user, active) }}
+  <div class="main">
+    <header class="topbar">
+      <span><strong>{{ user.nombre }}</strong> <small>({{ user.rol.value }})</small></span>
+      <a href="/logout" class="btn btn-secondary btn-sm">Cerrar sesión</a>
+    </header>
+    <main class="content">
+      <h1>{{ title }}</h1>
+      {{ alertas(success, error) }}
+      {{ caller() }}
+    </main>
+  </div>
+</div>
+</body>
+</html>
+{% endmacro %}

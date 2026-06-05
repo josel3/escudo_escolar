@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block page_title %}Materias{% endblock %}
+{% set active = 'materias' %}
+{% block content %}
+<div class="card">
+  <form method="post" action="/admin/materias/nueva">
+    <label>Nombre</label>
+    <input type="text" name="nombre" required>
+    <label>Código</label>
+    <input type="text" name="codigo" required>
+    <button type="submit" class="btn">Crear materia</button>
+  </form>
+</div>
+<table class="card">
+  {% for m in materias %}<tr><td>{{ m.codigo }}</td><td>{{ m.nombre }}</td></tr>{% endfor %}
+</table>
+{% endblock %}

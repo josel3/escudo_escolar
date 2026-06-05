@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block page_title %}Solicitudes de reunión{% endblock %}
+{% set active = 'reuniones' %}
+{% block content %}
+<div class="card">
+  {% for s in solicitudes %}
+  <article style="padding:1rem 0;border-bottom:1px solid #e5e7eb">
+    <strong>{{ s.titulo }}</strong>
+    <p>{{ s.contenido }}</p>
+    <small>De: {{ s.emisor.nombre if s.emisor else '—' }} — {{ s.fecha_envio | fmt_fecha }}</small>
+  </article>
+  {% else %}<p>No hay solicitudes pendientes.</p>{% endfor %}
+</div>
+{% endblock %}

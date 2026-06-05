@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Tareas{% endblock %}
+{% block page_title %}Mis tareas{% endblock %}
+{% set active = 'tareas' %}
+{% block content %}
+<div class="card">
+  {% if tareas %}
+  <table>
+    <thead><tr><th>Materia</th><th>Título</th><th>Entrega</th><th>Estado</th></tr></thead>
+    <tbody>
+      {% for t in tareas %}
+      <tr>
+        <td>{{ t.asignacion_docente.materia.nombre }}</td>
+        <td>{{ t.titulo }}<br><small>{{ t.descripcion[:80] }}…</small></td>
+        <td>{{ t.fecha_entrega.strftime('%d/%m/%Y') }}</td>
+        <td>
+          {% if t.fecha_entrega < hoy %}<span class="badge badge-rojo">Vencida</span>
+          {% elif (t.fecha_entrega - hoy).days <= 3 %}<span class="badge badge-amarillo">Próxima</span>
+          {% else %}<span class="badge badge-verde">Pendiente</span>{% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p>No hay tareas asignadas.</p>
+  {% endif %}
+</div>
+{% endblock %}

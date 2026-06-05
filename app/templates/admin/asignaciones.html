@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block page_title %}Asignaciones docentes{% endblock %}
+{% set active = 'asignaciones' %}
+{% block content %}
+<div class="card">
+  <form method="post" action="/admin/asignaciones/nueva">
+    <label>Docente</label>
+    <select name="docente_id">{% for d in docentes %}<option value="{{ d.id }}">{{ d.nombre }}</option>{% endfor %}</select>
+    <label>Materia</label>
+    <select name="materia_id">{% for m in materias %}<option value="{{ m.id }}">{{ m.nombre }}</option>{% endfor %}</select>
+    <label>Curso</label>
+    <select name="curso_id">{% for c in cursos %}<option value="{{ c.id }}">{{ c.nombre_completo }}</option>{% endfor %}</select>
+    <button type="submit" class="btn">Asignar</button>
+  </form>
+</div>
+<table class="card">
+  {% for a in asignaciones %}
+  <tr><td>{{ a.docente.nombre }}</td><td>{{ a.materia.nombre }}</td><td>{{ a.curso.nombre_completo }}</td></tr>
+  {% endfor %}
+</table>
+{% endblock %}

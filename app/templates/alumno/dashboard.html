@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% block title %}Dashboard Alumno{% endblock %}
+{% block page_title %}Mi rendimiento{% endblock %}
+{% set active = 'dashboard' %}
+{% block content %}
+<div class="grid-3">
+  <div class="card stat">
+    <div class="num">{{ porcentaje_asistencia }}%</div>
+    <div class="lbl">Asistencia</div>
+  </div>
+  <div class="card stat">
+    <div class="num">{{ total_faltas }}</div>
+    <div class="lbl">Faltas acumuladas</div>
+  </div>
+  <div class="card stat">
+    <div class="num">{% if notificaciones_pendientes %}<span class="badge badge-rojo">{{ notificaciones_pendientes }}</span>{% else %}0{% endif %}</div>
+    <div class="lbl">Avisos sin leer</div>
+  </div>
+</div>
+
+{% if inscripcion %}
+<p><strong>Curso:</strong> {{ inscripcion.curso.nombre_completo }} · Ciclo {{ ciclo_actual }}</p>
+{% endif %}
+
+<div class="card">
+  <h2>Materias (semáforo académico)</h2>
+  {% if materias %}
+  {% for m in materias %}
+  <div class="materia-row">
+    <span>{{ m.nombre }}</span>
+    <span class="{{ m.css_semaforo }}">{{ m.promedio }}</span>
+  </div>
+  {% endfor %}
+  {% else %}
+  <p>No hay calificaciones cargadas aún.</p>
+  {% endif %}
+</div>
+
+<p>
+  <a href="/alumno/tutor-ia" class="btn">¿Cómo estás? — Tutor IA</a>
+  <a href="/alumno/reportar-bullying" class="btn btn-secondary">Reportar bullying</a>
+</p>
+{% endblock %}

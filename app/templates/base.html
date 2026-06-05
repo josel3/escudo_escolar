@@ -1,0 +1,27 @@
+{% from "macros.html" import nav_sidebar, alertas %}
+{% set user = alumno|default(tutor)|default(docente)|default(directivo)|default(admin) %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}EscudoEscolar{% endblock %}</title>
+  <link rel="stylesheet" href="/static/css/main.css">
+</head>
+<body>
+<div class="layout">
+  {{ nav_sidebar(user, active|default('')) }}
+  <div class="main">
+    <header class="topbar">
+      <span><strong>{{ user.nombre }}</strong> <small>({{ user.rol.value }})</small></span>
+      <a href="/logout" class="btn btn-secondary btn-sm">Cerrar sesión</a>
+    </header>
+    <main class="content">
+      <h1>{% block page_title %}{% endblock %}</h1>
+      {{ alertas(success|default(request.query_params.get('success', '')), error|default(request.query_params.get('error', ''))) }}
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+</div>
+</body>
+</html>

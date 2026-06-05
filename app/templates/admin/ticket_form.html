@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block page_title %}Nuevo ticket{% endblock %}
+{% set active = 'ticketera' %}
+{% block content %}
+<div class="card">
+  <form method="post" action="/admin/ticketera/nuevo">
+    <label>Módulo afectado</label>
+    <input type="text" name="modulo_afectado" required placeholder="Ej: Tutor IA">
+    <label>Prioridad</label>
+    <select name="prioridad">{% for p in prioridades %}<option value="{{ p }}">{{ p }}</option>{% endfor %}</select>
+    <label>Descripción</label>
+    <textarea name="descripcion" required></textarea>
+    <button type="submit" class="btn">Crear ticket</button>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+{% block page_title %}Panel docente{% endblock %}
+{% set active = 'dashboard' %}
+{% block content %}
+<div class="grid-2">
+  <div class="card">
+    <h2>Mis cursos y materias</h2>
+    <ul>
+      {% for a in asignaciones %}
+      <li>{{ a.materia.nombre }} — {{ a.curso.nombre_completo }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  <div class="card">
+    <h2>Alumnos en riesgo (&lt; 4)</h2>
+    {% if alumnos_riesgo %}
+    <table>
+      <tr><th>Alumno</th><th>Materia</th><th>Prom.</th></tr>
+      {% for ar in alumnos_riesgo %}
+      <tr><td>{{ ar.nombre }}</td><td>{{ ar.materia }}</td><td class="semaforo-rojo">{{ ar.promedio }}</td></tr>
+      {% endfor %}
+    </table>
+    {% else %}<p>Ninguno en rojo en tus materias.</p>{% endif %}
+  </div>
+</div>
+<div class="card">
+  <h2>Próximas tareas</h2>
+  {% for t in tareas_proximas %}
+  <p>{{ t.titulo }} — {{ t.fecha_entrega.strftime('%d/%m/%Y') }} ({{ t.asignacion_docente.materia.nombre }})</p>
+  {% else %}<p>Sin tareas próximas.</p>{% endfor %}
+</div>
+{% endblock %}

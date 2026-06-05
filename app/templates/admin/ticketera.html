@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% block page_title %}Ticketera de incidencias{% endblock %}
+{% set active = 'ticketera' %}
+{% block content %}
+<p><a href="/admin/ticketera/nuevo" class="btn">Nuevo ticket</a></p>
+<form method="get" class="card">
+  <select name="estado">
+    <option value="">Estado</option>
+    {% for e in estados %}<option value="{{ e }}" {% if estado_filtro == e %}selected{% endif %}>{{ e }}</option>{% endfor %}
+  </select>
+  <button type="submit" class="btn btn-sm">Filtrar</button>
+</form>
+<div class="card">
+  {% for t in tickets %}
+  <article style="padding:1rem 0;border-bottom:1px solid #e5e7eb">
+    <strong>#{{ t.id }} — {{ t.modulo_afectado }}</strong>
+    <span class="badge">{{ t.prioridad.value }}</span> <span class="badge">{{ t.estado.value }}</span>
+    <p>{{ t.descripcion }}</p>
+    <small>{{ t.creador.nombre if t.creador else '—' }} — {{ t.fecha_creacion | fmt_fecha }}</small>
+    <form method="post" action="/admin/ticketera/{{ t.id }}/estado" style="margin-top:0.5rem">
+      <select name="nuevo_estado">
+        {% for e in estados %}<option value="{{ e }}">{{ e }}</option>{% endfor %}
+      </select>
+      <input type="text" name="notas_resolucion" placeholder="Notas de resolución">
+      <button type="submit" class="btn btn-sm">Actualizar</button>
+    </form>
+  </article>
+  {% endfor %}
+</div>
+{% endblock %}

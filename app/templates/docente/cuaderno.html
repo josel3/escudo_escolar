@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block page_title %}Cuaderno / Comunicaciones{% endblock %}
+{% set active = 'cuaderno' %}
+{% block content %}
+<div class="card">
+  <h2>Enviar notificación</h2>
+  <form method="post" action="/docente/cuaderno/enviar">
+    <label>Destinatario (alumno o familia)</label>
+    <select name="receptor_id" required>
+      {% for a in alumnos %}<option value="{{ a.id }}">{{ a.nombre }}</option>{% endfor %}
+    </select>
+    <label>Tipo</label>
+    <select name="tipo">{% for t in tipos %}<option value="{{ t }}">{{ t }}</option>{% endfor %}</select>
+    <label>Título</label>
+    <input type="text" name="titulo" required>
+    <label>Contenido</label>
+    <textarea name="contenido" required></textarea>
+    <label><input type="checkbox" name="requiere_firma" value="true"> Requerir firma de la familia</label>
+    <button type="submit" class="btn">Enviar</button>
+  </form>
+</div>
+<div class="card">
+  <h2>Notificaciones</h2>
+  {% for n in notificaciones %}
+  <p>
+    <strong>{{ n.titulo }}</strong><br>
+    <small>
+      {% if n.emisor_id == docente.id %}
+        Enviado a {{ n.receptor.nombre if n.receptor else '—' }}
+      {% else %}
+        Recibido de {{ n.emisor.nombre if n.emisor else 'Sistema' }}
+      {% endif %}
+      · {{ n.fecha_envio | fmt_fecha }}
+    </small>
+  </p>
+  {% endfor %}
+</div>
+{% endblock %}

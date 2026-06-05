@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block page_title %}Administración EscudoEscolar{% endblock %}
+{% set active = 'dashboard' %}
+{% block content %}
+<div class="grid-3">
+  {% for rol, cant in conteos.items() %}
+  <div class="card stat"><div class="num">{{ cant }}</div><div class="lbl">{{ rol }}</div></div>
+  {% endfor %}
+</div>
+<div class="grid-3">
+  <div class="card stat"><div class="num">{{ total_chats_ia }}</div><div class="lbl">Mensajes Tutor IA</div></div>
+  <div class="card stat"><div class="num">{{ tickets_abiertos }}</div><div class="lbl">Tickets abiertos</div></div>
+  <div class="card stat"><div class="num">{{ total_notif }}</div><div class="lbl">Notificaciones totales</div></div>
+</div>
+{% endblock %}

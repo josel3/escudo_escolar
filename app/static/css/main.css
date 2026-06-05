@@ -1,0 +1,532 @@
+:root {
+  --azul: #1e40af;
+  --azul-oscuro: #1e3a8a;
+  --verde: #16a34a;
+  --amarillo: #ca8a04;
+  --rojo: #dc2626;
+  --gris-50: #f9fafb;
+  --gris-100: #f3f4f6;
+  --gris-200: #e5e7eb;
+  --gris-600: #4b5563;
+  --gris-800: #1f2937;
+  --sombra: 0 1px 3px rgba(0, 0, 0, 0.1);
+  --radio: 8px;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: "Segoe UI", system-ui, sans-serif;
+  background: var(--gris-100);
+  color: var(--gris-800);
+  line-height: 1.5;
+}
+
+a { color: var(--azul); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+.layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+.sidebar {
+  width: 240px;
+  background: var(--azul-oscuro);
+  color: #fff;
+  padding: 1rem 0;
+  flex-shrink: 0;
+}
+
+.sidebar .brand {
+  padding: 0 1.25rem 1rem;
+  font-size: 1.1rem;
+  font-weight: 700;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  margin-bottom: 0.5rem;
+}
+
+.sidebar nav a {
+  display: block;
+  color: rgba(255, 255, 255, 0.9);
+  padding: 0.55rem 1.25rem;
+  text-decoration: none;
+  font-size: 0.95rem;
+}
+
+.sidebar nav a:hover,
+.sidebar nav a.active {
+  background: rgba(255, 255, 255, 0.12);
+  text-decoration: none;
+}
+
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+}
+
+.topbar {
+  background: #fff;
+  padding: 0.75rem 1.5rem;
+  border-bottom: 1px solid var(--gris-200);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: var(--sombra);
+}
+
+.content { padding: 1.25rem 1.5rem 2rem; flex: 1; }
+
+h1 { font-size: 1.5rem; margin: 0 0 1rem; }
+h2 { font-size: 1.15rem; margin: 1.25rem 0 0.75rem; }
+
+.card {
+  background: #fff;
+  border-radius: var(--radio);
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+  box-shadow: var(--sombra);
+  border: 1px solid var(--gris-200);
+}
+
+.grid-2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 1rem; }
+.grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; }
+
+.stat {
+  text-align: center;
+  padding: 1rem;
+}
+
+.stat .num { font-size: 2rem; font-weight: 700; color: var(--azul); }
+.stat .lbl { font-size: 0.85rem; color: var(--gris-600); }
+
+.alert {
+  padding: 0.75rem 1rem;
+  border-radius: var(--radio);
+  margin-bottom: 1rem;
+}
+
+.alert-success { background: #dcfce7; color: #166534; border: 1px solid #86efac; }
+.alert-error { background: #fee2e2; color: #991b1b; border: 1px solid #fca5a5; }
+.alert-warning { background: #fef9c3; color: #854d0e; border: 1px solid #fde047; }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+th, td {
+  padding: 0.6rem 0.75rem;
+  text-align: left;
+  border-bottom: 1px solid var(--gris-200);
+}
+
+th { background: var(--gris-50); font-weight: 600; }
+
+.btn {
+  display: inline-block;
+  padding: 0.5rem 1rem;
+  border-radius: 6px;
+  border: none;
+  font-size: 0.9rem;
+  cursor: pointer;
+  text-decoration: none;
+  background: var(--azul);
+  color: #fff !important;
+}
+
+.btn:hover { background: var(--azul-oscuro); text-decoration: none; }
+.btn-secondary { background: var(--gris-600); }
+.btn-danger { background: var(--rojo); }
+.btn-sm { padding: 0.35rem 0.65rem; font-size: 0.8rem; }
+
+form label {
+  display: block;
+  margin: 0.75rem 0 0.25rem;
+  font-weight: 500;
+  font-size: 0.9rem;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+input[type="date"],
+input[type="file"],
+select,
+textarea {
+  width: 100%;
+  max-width: 480px;
+  padding: 0.5rem 0.65rem;
+  border: 1px solid var(--gris-200);
+  border-radius: 6px;
+  font-size: 0.95rem;
+}
+
+textarea { min-height: 100px; resize: vertical; }
+
+.semaforo-verde { color: var(--verde); font-weight: 700; }
+.semaforo-amarillo { color: var(--amarillo); font-weight: 700; }
+.semaforo-rojo { color: var(--rojo); font-weight: 700; }
+
+.badge {
+  display: inline-block;
+  padding: 0.15rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.badge-rojo { background: #fee2e2; color: var(--rojo); }
+.badge-verde { background: #dcfce7; color: var(--verde); }
+.badge-amarillo { background: #fef9c3; color: var(--amarillo); }
+
+.chat-bubble {
+  padding: 0.75rem 1rem;
+  border-radius: var(--radio);
+  margin-bottom: 0.75rem;
+  max-width: 90%;
+}
+
+.chat-user { background: #dbeafe; margin-left: auto; }
+.chat-model { background: #fff; border: 1px solid var(--gris-200); }
+
+.login-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--azul-oscuro), var(--azul));
+}
+
+.login-card {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+.login-card h1 { text-align: center; color: var(--azul-oscuro); }
+
+.materia-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.65rem 0;
+  border-bottom: 1px solid var(--gris-100);
+}
+
+.barra-semaforo {
+  height: 8px;
+  border-radius: 4px;
+  background: var(--gris-200);
+  overflow: hidden;
+  margin-top: 0.5rem;
+}
+
+.barra-semaforo span { display: block; height: 100%; }
+
+@media (max-width: 768px) {
+  .layout { flex-direction: column; }
+  .sidebar { width: 100%; }
+  .sidebar nav { display: flex; flex-wrap: wrap; }
+  .sidebar nav a { padding: 0.5rem 0.75rem; }
+}
+
+/* ==========================================================================
+   TUTOR IA - COMPORTAMIENTO ESTILO CHAT DE WHATSAPP
+   ========================================================================== */
+
+/* Contenedor del historial */
+.chat-container {
+  max-height: 60vh;
+  overflow-y: auto;
+  background: var(--gris-50);
+  padding: 1.5rem;
+}
+
+/* Caja de entrada principal */
+.chat-input-card {
+  padding: 0.75rem 1rem !important;
+  margin-top: 1rem;
+}
+
+/* Alineación en una sola fila responsive */
+.chat-input-row {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+/* Estilo del textarea auto-expandible */
+.chat-input-row textarea {
+  width: 100% !important;
+  max-width: 100% !important;
+  min-height: 40px;
+  max-height: 50vh; /* El JS lo limitará dinámicamente también */
+  padding: 0.6rem 0.8rem;
+  border: 1px solid var(--gris-200);
+  border-radius: 20px; /* Bordes redondeados tipo chat */
+  font-family: inherit;
+  font-size: 0.95rem;
+  resize: none;
+  line-height: 1.3;
+  outline: none;
+  box-sizing: border-box;
+}
+
+/* Botonera interna */
+.chat-actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+/* Iconos de acción interactivos (Micrófono, Música, Nota) */
+.btn-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: none;
+  background: transparent;
+  font-size: 1.25rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  user-select: none;
+}
+
+.btn-icon:hover:not(:disabled) {
+  background: var(--gris-200);
+}
+
+.btn-icon:disabled {
+  cursor: not-allowed;
+}
+
+/* Checkbox estilizado minimalista */
+.checkbox-text-only {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  font-size: 1.1rem;
+  transition: background 0.2s;
+}
+
+.checkbox-text-only:hover {
+  background: var(--gris-200);
+}
+
+.checkbox-text-only input {
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+/* Resaltado visual si el checkbox está activo */
+.checkbox-text-only:has(input:checked) {
+  background: #dcfce7;
+  border: 1px solid var(--verde);
+}
+
+/* Botón de enviar (Avión de papel) */
+.btn-send {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  border: none;
+  background: var(--azul);
+  font-size: 1.1rem;
+  color: #fff;
+  cursor: pointer;
+  transition: transform 0.1s ease, background 0.2s;
+}
+
+.btn-send:hover {
+  background: var(--azul-oscuro);
+  transform: scale(1.05);
+}
+
+/* Acciones secundarias inferiores */
+.chat-footer-actions {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid var(--gris-100);
+}
+
+.btn-link-danger {
+  background: none;
+  border: none;
+  color: var(--rojo);
+  font-size: 0.85rem;
+  cursor: pointer;
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+}
+
+.btn-link-danger:hover {
+  background: #fee2e2;
+  text-decoration: underline;
+}
+
+/* Ajuste de distribución para pantallas medianas/grandes */
+@media (min-width: 600px) {
+  .chat-input-row {
+    flex-direction: row;
+    align-items: flex-end;
+  }
+  .chat-actions {
+    width: auto;
+    flex-shrink: 0;
+  }
+}
+
+/* Estado activo del botón de grabación (Grabando) */
+.btn-icon.is-recording {
+  background: #fee2e2 !important; /* Fondo rojizo suave */
+  border: 1px solid var(--rojo) !important;
+  animation: pulso-grabacion 1.5s infinite ease-in-out;
+  box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4);
+}
+
+/* Animación de pulsación estilo WhatsApp */
+@keyframes pulso-grabacion {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(220, 38, 38, 0.4);
+  }
+  50% {
+    transform: scale(1.08);
+    box-shadow: 0 0 0 8px rgba(220, 38, 38, 0);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 0 0 rgba(220, 38, 38, 0);
+  }
+}
+
+/* ==========================================================================
+   TUTOR IA - LOADER DE ESPERA Y ANIMACIONES
+   ========================================================================== */
+
+/* Contenedor del Loader */
+.chat-loader {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: #f0fdf4; /* Tono verde éxito clarito relajante */
+  border: 1px solid #bbf7d0;
+  padding: 0.75rem 1rem;
+  border-radius: 12px;
+  margin-bottom: 0.75rem;
+  font-size: 0.9rem;
+  color: #166534;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+/* El círculo giratorio (Spinner) */
+.spinner {
+  width: 20px;
+  height: 20px;
+  border: 3px solid #16a34a;
+  border-top-color: transparent;
+  border-radius: 50%;
+  animation: giro-spinner 0.8s linear infinite;
+  flex-shrink: 0;
+}
+
+/* Animación de rotación */
+@keyframes giro-spinner {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+/* Animación sutil de aparición */
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-5px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Bloqueo visual preventivo para inputs deshabilitados */
+.chat-input-row textarea:disabled {
+  background: var(--gris-100);
+  cursor: not-allowed;
+}
+
+/* ==========================================================================
+   TUTOR IA - TEXTO COLAPSABLE (ESTILO WHATSAPP AUDIO)
+   ========================================================================== */
+
+/* Asegura que el reproductor de audio tenga espacio arriba */
+.chat-model audio {
+  display: block;
+  margin-bottom: 0.5rem;
+  max-width: 100%;
+}
+
+/* Contenedor del texto colapsado por defecto */
+.chat-text-collapsible {
+  max-height: 0px;
+  overflow: hidden;
+  transition: max-height 0.3s ease-in-out, opacity 0.2s;
+  opacity: 0;
+}
+
+/* Estado expandido manejado por JavaScript */
+.chat-text-collapsible.is-expanded {
+  max-height: 2000px; /* Un valor alto para dar espacio a respuestas largas */
+  opacity: 1;
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+  border-top: 1px dashed var(--gris-200);
+}
+
+/* Estilo del texto interno */
+.chat-text-content {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.4;
+  color: var(--gris-800);
+}
+
+/* Botón sutil de expandir/colapsar */
+.btn-toggle-text {
+  background: none;
+  border: none;
+  color: var(--azul);
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  padding: 0.4rem 0 0;
+  display: block;
+  width: 100%;
+  text-align: left;
+  outline: none;
+  user-select: none;
+}
+
+.btn-toggle-text:hover {
+  text-decoration: underline;
+  color: var(--azul-oscuro);
+}

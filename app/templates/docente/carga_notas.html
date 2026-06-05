@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block page_title %}Carga de notas{% endblock %}
+{% set active = 'notas' %}
+{% block content %}
+<div class="card">
+  <form method="get">
+    <label>Asignación</label>
+    <select name="asignacion_id">
+      <option value="">—</option>
+      {% for a in asignaciones %}
+      <option value="{{ a.id }}" {% if asignacion_sel and a.id == asignacion_sel.id %}selected{% endif %}>
+        {{ a.materia.nombre }} — {{ a.curso.nombre_completo }}
+      </option>
+      {% endfor %}
+    </select>
+    <label>Trimestre</label>
+    <select name="trimestre">
+      {% for t in trimetres %}
+      <option value="{{ t }}" {% if trimestre_sel == t %}selected{% endif %}>{{ t }}°</option>
+      {% endfor %}
+    </select>
+    <button type="submit" class="btn btn-sm">Cargar planilla</button>
+  </form>
+</div>
+
+{% if asignacion_sel and alumnos %}
+<div class="card">
+  <h2>Carga manual</h2>
+  <form method="post" action="/docente/carga-notas/manual">
+    <input type="hidden" name="asignacion_id" value="{{ asignacion_sel.id }}">
+    <input type="hidden" name="trimestre" value="{{ trimestre_sel }}">
+    <table>
+      <tr><th>Alumno</th><th>Nota (1-10)</th></tr>
+      {% for ins in alumnos %}
+      <tr>
+        <td>{{ ins.alumno.nombre }}</td>
+        <td><input type="text" name="nota_{{ ins.id }}" value="{{ notas_existentes.get(ins.id, '') }}" style="width:80px"></td>
+      </tr>
+      {% endfor %}
+    </table>
+    <button type="submit" class="btn">Guardar notas</button>
+  </form>
+</div>
+<div class="card">
+  <h2>Importar CSV</h2>
+  <p>Columnas: <code>email,nota</code></p>
+  <form method="post" action="/docente/carga-notas/csv" enctype="multipart/form-data">
+    <input type="hidden" name="asignacion_id" value="{{ asignacion_sel.id }}">
+    <input type="hidden" name="trimestre" value="{{ trimestre_sel }}">
+    <input type="file" name="archivo" accept=".csv" required>
+    <button type="submit" class="btn">Importar</button>
+  </form>
+</div>
+{% endif %}
+{% endblock %}

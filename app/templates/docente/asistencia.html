@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% block page_title %}Registro de asistencia{% endblock %}
+{% set active = 'asistencia' %}
+{% block content %}
+<div class="card">
+  <form method="get">
+    <label>Curso</label>
+    <select name="curso_id">
+      {% for c in cursos %}
+      <option value="{{ c.id }}" {% if curso_id_sel == c.id %}selected{% endif %}>{{ c.nombre }}</option>
+      {% endfor %}
+    </select>
+    <label>Fecha</label>
+    <input type="date" name="fecha_str" value="{{ fecha_sel.isoformat() }}">
+    <button type="submit" class="btn btn-sm">Cargar lista</button>
+  </form>
+</div>
+{% if alumnos %}
+<form method="post" action="/docente/asistencia" class="card">
+  <input type="hidden" name="curso_id" value="{{ curso_id_sel }}">
+  <input type="hidden" name="fecha" value="{{ fecha_sel.isoformat() }}">
+  <table>
+    <tr><th>Alumno</th><th>Estado</th></tr>
+    {% for ins in alumnos %}
+    <tr>
+      <td>{{ ins.alumno.nombre }}</td>
+      <td>
+        <select name="asist_{{ ins.id }}">
+          {% for e in estados_asistencia %}
+          <option value="{{ e }}" {% if asistencias.get(ins.id) == e %}selected{% endif %}>{{ e }}</option>
+          {% endfor %}
+        </select>
+      </td>
+    </tr>
+    {% endfor %}
+  </table>
+  <button type="submit" class="btn">Guardar asistencia</button>
+</form>
+{% endif %}
+{% endblock %}

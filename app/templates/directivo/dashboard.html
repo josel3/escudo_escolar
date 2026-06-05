@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block page_title %}Consola directiva{% endblock %}
+{% set active = 'dashboard' %}
+{% block content %}
+<div class="grid-3">
+  <div class="card stat"><div class="num">{{ total_alumnos }}</div><div class="lbl">Alumnos activos</div></div>
+  <div class="card stat"><div class="num">{{ alumnos_riesgo }}</div><div class="lbl">En riesgo ({{ pct_riesgo }}%)</div></div>
+  <div class="card stat"><div class="num">{{ alertas_bullying }}</div><div class="lbl">Alertas bullying</div></div>
+</div>
+<div class="card">
+  <h2>Incidencias recientes</h2>
+  {% for c in incidencias_recientes %}
+  <p><strong>{{ c.titulo }}</strong> — {{ c.fecha_envio | fmt_fecha }}<br>{{ c.contenido[:150] }}…</p>
+  {% else %}<p>Sin incidencias recientes.</p>{% endfor %}
+  <a href="/directivo/casos" class="btn btn-sm">Ver todos los casos</a>
+</div>
+{% endblock %}

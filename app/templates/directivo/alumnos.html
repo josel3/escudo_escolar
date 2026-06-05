@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block page_title %}Alumnos{% endblock %}
+{% set active = 'alumnos' %}
+{% block content %}
+<form method="get" class="card">
+  <input type="text" name="q" value="{{ q }}" placeholder="Buscar por nombre">
+  <button type="submit" class="btn btn-sm">Buscar</button>
+</form>
+<div class="card">
+  <table>
+    <tr><th>Nombre</th><th>Email</th><th>Acciones</th></tr>
+    {% for a in alumnos %}
+    <tr>
+      <td>{{ a.nombre }}</td>
+      <td>{{ a.email }}</td>
+      <td><a href="/directivo/legajos/{{ a.id }}" class="btn btn-sm">Legajo digital</a></td>
+    </tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

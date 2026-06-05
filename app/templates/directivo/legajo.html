@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% block page_title %}Legajo — {{ alumno.nombre }}{% endblock %}
+{% set active = 'alumnos' %}
+{% block content %}
+<p><a href="/directivo/alumnos">← Volver al listado</a></p>
+
+<div class="grid-2">
+  <div class="card">
+    <h2>Documentación</h2>
+    {% for d in documentos %}
+    <p>{{ d.tipo_documento }} — {% if d.entregado %}✓ Entregado{% else %}Pendiente{% endif %}</p>
+    {% endfor %}
+    <form method="post" action="/directivo/legajos/{{ alumno.id }}/documento">
+      <label>Nuevo documento</label>
+      <input type="text" name="tipo_documento" placeholder="Ej: Fotocopia DNI">
+      <label><input type="checkbox" name="entregado" value="true"> Entregado</label>
+      <textarea name="observaciones" placeholder="Observaciones"></textarea>
+      <button type="submit" class="btn btn-sm">Agregar</button>
+    </form>
+  </div>
+  <div class="card">
+    <h2>Familia</h2>
+    {% for v in vinculos %}
+    <p>{{ v.tutor.nombre }} ({{ v.parentesco }})</p>
+    {% endfor %}
+  </div>
+</div>
+
+<div class="card">
+  <h2>Anotación especial</h2>
+  <form method="post" action="/directivo/legajos/{{ alumno.id }}/anotacion">
+    <select name="categoria">{% for c in categorias_anotacion %}<option value="{{ c }}">{{ c }}</option>{% endfor %}</select>
+    <textarea name="descripcion" required></textarea>
+    <button type="submit" class="btn btn-sm">Registrar</button>
+  </form>
+  {% for an in anotaciones %}
+  <p><span class="badge">{{ an.categoria.value }}</span> {{ an.fecha_registro }} — {{ an.descripcion }}</p>
+  {% endfor %}
+</div>
+
+<div class="card">
+  <h2>Sanciones</h2>
+  <form method="post" action="/directivo/legajos/{{ alumno.id }}/sancion">
+    <select name="tipo_sancion">{% for t in tipos_sancion %}<option value="{{ t }}">{{ t }}</option>{% endfor %}</select>
+    <input type="number" name="cantidad" value="0" min="0">
+    <input type="date" name="fecha_sancion" value="{{ '' }}">
+    <textarea name="motivo" required></textarea>
+    <button type="submit" class="btn btn-sm">Registrar sanción</button>
+  </form>
+  {% for s in sanciones %}
+  <p>{{ s.tipo_sancion.value }} — {{ s.fecha_sancion }}: {{ s.motivo }}</p>
+  {% endfor %}
+</div>
+{% endblock %}

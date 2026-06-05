@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block page_title %}Cuaderno familiar{% endblock %}
+{% set active = 'cuaderno' %}
+{% block content %}
+<div class="card">
+  {% for n in notificaciones %}
+  <article style="border-bottom:1px solid #e5e7eb;padding:1rem 0">
+    <strong>{{ n.titulo }}</strong> <span class="badge">{{ n.tipo_notificacion.value }}</span>
+    <p>{{ n.contenido }}</p>
+    <small>{{ n.fecha_envio | fmt_fecha }} — {{ n.emisor.nombre if n.emisor else 'Institución' }}</small>
+    {% if n.requiere_firma and not n.firmado %}
+    <form method="post" action="/tutor/cuaderno/firmar/{{ n.id }}" style="margin-top:0.75rem">
+      <button type="submit" class="btn">Darme por notificado y firmar</button>
+    </form>
+    {% elif n.firmado %}<p class="badge badge-verde">Firmado</p>{% endif %}
+  </article>
+  {% else %}<p>Sin notificaciones.</p>{% endfor %}
+</div>
+{% endblock %}

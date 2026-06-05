@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+{% block title %}Mis notas{% endblock %}
+{% block page_title %}Historial académico{% endblock %}
+{% set active = 'notas' %}
+{% block content %}
+{% for inscr in inscripciones %}
+<div class="card">
+  <h2>{{ inscr.curso.nombre_completo }} — {{ inscr.ciclo_lectivo }}</h2>
+  {% if inscr.calificaciones %}
+  <table>
+    <thead><tr><th>Materia</th><th>Trimestre</th><th>Nota</th></tr></thead>
+    <tbody>
+      {% for cal in inscr.calificaciones %}
+      <tr>
+        <td>{{ cal.asignacion_docente.materia.nombre }}</td>
+        <td>{{ cal.trimestre }}°</td>
+        <td class="{{ semaforo_css(cal.nota|float) }}">{{ cal.nota }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+  {% else %}
+  <p>Sin calificaciones en este ciclo.</p>
+  {% endif %}
+</div>
+{% else %}
+<p>No hay inscripciones registradas.</p>
+{% endfor %}
+{% endblock %}

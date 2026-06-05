@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% block page_title %}Inscripciones y vínculos{% endblock %}
+{% set active = 'inscripciones' %}
+{% block content %}
+<div class="card">
+  <h2>Nueva inscripción</h2>
+  <form method="post" action="/admin/inscripciones/nueva">
+    <label>Alumno</label>
+    <select name="alumno_id">{% for a in alumnos %}<option value="{{ a.id }}">{{ a.nombre }}</option>{% endfor %}</select>
+    <label>Curso</label>
+    <select name="curso_id">{% for c in cursos %}<option value="{{ c.id }}">{{ c.nombre_completo }}</option>{% endfor %}</select>
+    <label>Ciclo lectivo</label>
+    <input type="number" name="ciclo_lectivo" value="{{ ciclo_actual }}">
+    <label>Estado</label>
+    <select name="estado">{% for e in estados %}<option value="{{ e }}">{{ e }}</option>{% endfor %}</select>
+    <button type="submit" class="btn">Inscribir</button>
+  </form>
+</div>
+<div class="card">
+  <h2>Vínculo familiar</h2>
+  <form method="post" action="/admin/vinculos/nuevo">
+    <label>Alumno</label>
+    <select name="alumno_id">{% for a in alumnos %}<option value="{{ a.id }}">{{ a.nombre }}</option>{% endfor %}</select>
+    <label>Tutor</label>
+    <select name="tutor_id">
+      {% for t in tutores %}<option value="{{ t.id }}">{{ t.nombre }}</option>{% endfor %}
+    </select>
+    <label>Parentesco</label>
+    <input type="text" name="parentesco" value="Madre" required>
+    <button type="submit" class="btn">Vincular</button>
+  </form>
+</div>
+<table class="card">
+  <tr><th>Alumno</th><th>Curso</th><th>Ciclo</th><th>Estado</th></tr>
+  {% for i in inscripciones %}
+  <tr><td>{{ i.alumno.nombre }}</td><td>{{ i.curso.nombre_completo }}</td><td>{{ i.ciclo_lectivo }}</td><td>{{ i.estado.value }}</td></tr>
+  {% endfor %}
+</table>
+{% endblock %}

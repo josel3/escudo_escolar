@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block page_title %}Panel familiar{% endblock %}
+{% set active = 'dashboard' %}
+{% block content %}
+{% if alumnos|length > 1 %}
+<form method="get" class="card">
+  <label>Seleccionar alumno</label>
+  <select name="alumno_id">
+    {% for a in alumnos %}
+    <option value="{{ a.id }}" {% if alumno_sel and a.id == alumno_sel.id %}selected{% endif %}>{{ a.nombre }}</option>
+    {% endfor %}
+  </select>
+  <button type="submit" class="btn btn-sm" style="margin-top:0.5rem">Ver alumno</button>
+</form>
+{% endif %}
+
+{% if alumno_sel %}
+<div class="grid-3">
+  <div class="card stat"><div class="num">{{ porcentaje_asistencia }}%</div><div class="lbl">Asistencia de {{ alumno_sel.nombre.split()[0] }}</div></div>
+  <div class="card stat"><div class="num">{{ total_faltas }}</div><div class="lbl">Faltas</div></div>
+  <div class="card stat"><div class="num">{{ firmas_pendientes }}</div><div class="lbl">Firmas pendientes</div></div>
+</div>
+
+<div class="card">
+  <h2>Promedios por materia</h2>
+  {% for m in materias %}
+  <div class="materia-row"><span>{{ m.nombre }}</span><span class="{{ m.css }}">{{ m.promedio }}</span></div>
+  {% else %}<p>Sin notas cargadas.</p>{% endfor %}
+</div>
+{% else %}
+<div class="alert alert-warning">No hay alumnos vinculados a tu cuenta. Contactá a la institución.</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block page_title %}Estadísticas institucionales{% endblock %}
+{% set active = 'stats' %}
+{% block content %}
+<p>Ciclo lectivo: <strong>{{ ciclo }}</strong>
+  <a href="/directivo/estadisticas/exportar-csv?ciclo={{ ciclo }}" class="btn btn-sm">Exportar CSV</a>
+</p>
+<div class="grid-3">
+  <div class="card stat"><div class="num semaforo-verde">{{ verde }}</div><div class="lbl">Notas verdes</div></div>
+  <div class="card stat"><div class="num semaforo-amarillo">{{ amarillo }}</div><div class="lbl">Amarillas</div></div>
+  <div class="card stat"><div class="num semaforo-rojo">{{ rojo }}</div><div class="lbl">Rojas</div></div>
+</div>
+<p>Promedio general: <strong>{{ promedio_general }}</strong></p>
+<div class="card">
+  <h2>Por curso</h2>
+  <table>
+    <tr><th>Curso</th><th>Promedio</th><th>Alumnos</th></tr>
+    {% for s in stats_cursos %}
+    <tr><td>{{ s.division }}</td><td class="{{ s.css }}">{{ s.promedio }}</td><td>{{ s.cant_alumnos }}</td></tr>
+    {% endfor %}
+  </table>
+</div>
+{% endblock %}

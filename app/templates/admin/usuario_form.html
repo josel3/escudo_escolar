@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block page_title %}Nuevo usuario{% endblock %}
+{% set active = 'usuarios' %}
+{% block content %}
+<div class="card">
+  <form method="post" action="/admin/usuarios/nuevo">
+    <label>Nombre</label>
+    <input type="text" name="nombre" required>
+    <label>Email</label>
+    <input type="email" name="email" required>
+    <label>Contraseña</label>
+    <input type="password" name="password" required minlength="6">
+    <label>Rol</label>
+    <select name="rol">{% for r in roles %}<option value="{{ r }}">{{ r }}</option>{% endfor %}</select>
+    <label>Teléfono (WhatsApp)</label>
+    <input type="text" name="telefono" placeholder="+54911...">
+    <button type="submit" class="btn">Crear</button>
+  </form>
+</div>
+{% endblock %}
