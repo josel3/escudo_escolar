@@ -13,9 +13,9 @@ sys.path.insert(0, str(ROOT))
 
 from sqlalchemy import select
 
-from app.database import AsyncSessionLocal, engine, init_db
-from app.security import hash_password
-from app.models.models import (
+from database import AsyncSessionLocal, engine, init_db
+from security import hash_password
+from models.models import (
     Usuario, RolEnum, Curso, NivelEnum, TurnoEnum, Materia,
     AsignacionDocente, InscripcionAlumno, VinculoFamiliar,
     CalificacionRegular, CuadernoNotificacion, TipoNotificacionEnum,
