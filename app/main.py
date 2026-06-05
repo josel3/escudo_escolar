@@ -8,10 +8,10 @@ from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 
-from app.config import settings
-from app.database import init_db, check_connection
-from app.middleware.auth import AuthMiddleware
-from app.routers import auth, alumno, tutor, docente, directivo, admin
+from config import settings
+from database import init_db, check_connection
+from middleware.auth import AuthMiddleware
+from routers import auth, alumno, tutor, docente, directivo, admin
 
 
 @asynccontextmanager

@@ -11,17 +11,17 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func, update
 from sqlalchemy.orm import selectinload
-from app.database import get_db
-from app.security import hash_password
-from app.models.models import (
+from database import get_db
+from security import hash_password
+from models.models import (
     Usuario, Curso, Materia, AsignacionDocente, InscripcionAlumno,
     VinculoFamiliar, TicketeraIncidenciaAdmin, CalificacionRegular,
     ChatTutorIA, CuadernoNotificacion,
     RolEnum, NivelEnum, TurnoEnum, EstadoInscripcionEnum,
     PrioridadTicketEnum, EstadoTicketEnum,
 )
-from app.config import settings
-from app.templating import templates
+from config import settings
+from templating import templates
 
 router = APIRouter(prefix="/admin", tags=["admin"])
 
@@ -71,9 +71,9 @@ async def dashboard(
     total_notif = int(result_notif.scalar() or 0)
 
     return templates.TemplateResponse(
+            request,
         "admin/dashboard.html",
         {
-            "request": request,
             "admin": admin,
             "conteos": conteos,
             "total_chats_ia": total_chats_ia,
@@ -108,9 +108,9 @@ async def lista_usuarios(
     usuarios = result.scalars().all()
 
     return templates.TemplateResponse(
+             request,
         "admin/usuarios.html",
         {
-            "request": request,
             "admin": admin,
             "usuarios": usuarios,
             "roles": [r.value for r in RolEnum],
@@ -130,9 +130,9 @@ async def nuevo_usuario_page(
 ):
     admin = require_admin(request)
     return templates.TemplateResponse(
+             request,
         "admin/usuario_form.html",
         {
-            "request": request,
             "admin": admin,
             "roles": [r.value for r in RolEnum],
             "usuario": None,
@@ -209,9 +209,9 @@ async def cursos_page(
     result = await db.execute(stmt)
     cursos = result.scalars().all()
     return templates.TemplateResponse(
+            request,
         "admin/cursos.html",
         {
-            "request": request,
             "admin": admin,
             "cursos": cursos,
             "niveles": [n.value for n in NivelEnum],
@@ -255,9 +255,9 @@ async def materias_page(
     result = await db.execute(stmt)
     materias = result.scalars().all()
     return templates.TemplateResponse(
+            request,
         "admin/materias.html",
         {
-            "request": request,
             "admin": admin,
             "materias": materias,
             "success": success,
@@ -321,9 +321,9 @@ async def asignaciones_page(
     cursos = result_c.scalars().all()
 
     return templates.TemplateResponse(
+            request,
         "admin/asignaciones.html",
         {
-            "request": request,
             "admin": admin,
             "asignaciones": asignaciones,
             "docentes": docentes,
@@ -395,9 +395,9 @@ async def inscripciones_page(
     cursos = result_c.scalars().all()
 
     return templates.TemplateResponse(
+            request,
         "admin/inscripciones.html",
         {
-            "request": request,
             "admin": admin,
             "inscripciones": inscripciones,
             "alumnos": alumnos,
@@ -448,7 +448,7 @@ async def nuevo_vinculo(
     parentesco: str = Form(...),
 ):
     require_admin(request)
-    from app.models.models import VinculoFamiliar
+    from models.models import VinculoFamiliar
     vinculo = VinculoFamiliar(
         alumno_id=alumno_id,
         tutor_id=tutor_id,
@@ -507,9 +507,9 @@ async def ticketera_page(
         conteos_estado[est.value] = int(result_c.scalar() or 0)
 
     return templates.TemplateResponse(
+             request,
         "admin/ticketera.html",
         {
-            "request": request,
             "admin": admin,
             "tickets": tickets,
             "estados": [e.value for e in EstadoTicketEnum],
@@ -552,9 +552,9 @@ async def actualizar_estado_ticket(
 async def nuevo_ticket_page(request: Request, error: str = ""):
     admin = require_admin(request)
     return templates.TemplateResponse(
+            request,
         "admin/ticket_form.html",
         {
-            "request": request,
             "admin": admin,
             "prioridades": [p.value for p in PrioridadTicketEnum],
             "error": error,

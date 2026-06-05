@@ -3,6 +3,10 @@ __pycache__/
 *.py[codz]
 *$py.class
 
+app/.venv
+
+escudo_escolar.zip
+
 # C extensions
 *.so
 

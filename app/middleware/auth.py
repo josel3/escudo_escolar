@@ -15,9 +15,9 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from sqlalchemy import select, delete
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.config import settings
-from app.database import AsyncSessionLocal
-from app.models.models import Usuario, Sesion
+from config import settings
+from database import AsyncSessionLocal
+from models.models import Usuario, Sesion
 
 
 # ─────────────────────────────────────────────────────────────────────────────

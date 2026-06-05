@@ -13,17 +13,17 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func, and_
 from sqlalchemy.orm import selectinload
 
-from app.database import get_db
-from app.models.models import (
+from database import get_db
+from models.models import (
     Usuario, Curso, InscripcionAlumno, CalificacionRegular, Asistencia,
     CuadernoNotificacion, LegajoPermanenteDocumento, AnotacionEspecial,
     SancionDisciplinaria, AsignacionDocente, BoletinHistorico, VinculoFamiliar,
     TipoNotificacionEnum, CategoriaMedicaEnum, TipoSancionEnum, EstadoInscripcionEnum,
     RolEnum,
 )
-from app.config import settings
-from app.templating import templates
-from app.services.notificaciones import despachar_notificacion
+from config import settings
+from templating import templates
+from services.notificaciones import despachar_notificacion
 
 router = APIRouter(prefix="/directivo", tags=["directivo"])
 
@@ -108,9 +108,9 @@ async def dashboard(
     incidencias_recientes = result_inc.scalars().all()
 
     return templates.TemplateResponse(
+        request,
         "directivo/dashboard.html",
         {
-            "request": request,
             "directivo": directivo,
             "total_alumnos": total_alumnos,
             "alumnos_riesgo": alumnos_riesgo,
@@ -201,9 +201,9 @@ async def estadisticas(
     ]
 
     return templates.TemplateResponse(
+            request,
         "directivo/estadisticas.html",
         {
-            "request": request,
             "directivo": directivo,
             "ciclo": ciclo,
             "verde": verde,
@@ -287,9 +287,9 @@ async def lista_alumnos(
     alumnos = result.scalars().unique().all()
 
     return templates.TemplateResponse(
+         request,
         "directivo/alumnos.html",
         {
-            "request": request,
             "directivo": directivo,
             "alumnos": alumnos,
             "ciclo": ciclo,
@@ -373,9 +373,9 @@ async def legajo_alumno(
     vinculos = result_tutores.scalars().all()
 
     return templates.TemplateResponse(
+         request,
         "directivo/legajo.html",
         {
-            "request": request,
             "directivo": directivo,
             "alumno": alumno,
             "documentos": documentos,
@@ -523,9 +523,9 @@ async def casos_bullying(
     casos = result.scalars().all()
 
     return templates.TemplateResponse(
+        request,
         "directivo/casos.html",
         {
-            "request": request,
             "directivo": directivo,
             "casos": casos,
         },
@@ -580,9 +580,9 @@ async def comunicados_page(
     comunicados_enviados = result_env.scalars().all()
 
     return templates.TemplateResponse(
+        request,
         "directivo/comunicados.html",
         {
-            "request": request,
             "directivo": directivo,
             "cursos": cursos,
             "comunicados_enviados": comunicados_enviados,

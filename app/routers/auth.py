@@ -6,12 +6,12 @@ from fastapi import APIRouter, Request, Depends, Form
 from fastapi.responses import HTMLResponse, RedirectResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select
-from app.config import settings
-from app.security import verify_password
-from app.templating import templates
-from app.database import get_db, AsyncSessionLocal
-from app.models.models import Usuario
-from app.middleware.auth import (
+from config import settings
+from security import verify_password
+from templating import templates
+from database import get_db, AsyncSessionLocal
+from models.models import Usuario
+from middleware.auth import (
     crear_sesion,
     eliminar_sesion,
     obtener_usuario_por_sesion,
@@ -61,12 +61,12 @@ async def login_page(request: Request, error: str = "", success: str = ""):
             )
 
     return templates.TemplateResponse(
+        request,
         "login.html",
         {
             "request": request,
             "error": error,
             "success": success,
-            "app_name": settings.APP_NAME,
         },
     )
 

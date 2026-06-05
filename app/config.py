@@ -8,7 +8,7 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-BASE_DIR = Path(__file__).parent.parent
+BASE_DIR = Path(__file__).parent
 
 class Settings:
     # App
@@ -27,8 +27,8 @@ class Settings:
 
     # Rutas
     MEDIA_DIR: Path = BASE_DIR / os.getenv("MEDIA_DIR", "media")
-    TEMPLATES_DIR: Path = BASE_DIR / "app" / "templates"
-    STATIC_DIR: Path = BASE_DIR / "app" / "static"
+    TEMPLATES_DIR: Path = BASE_DIR / "templates"
+    STATIC_DIR: Path = BASE_DIR / "static"
 
     # Gemini AI
     GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY", "")

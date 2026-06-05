@@ -12,16 +12,16 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func
 from sqlalchemy.orm import selectinload
 
-from app.database import get_db
-from app.models.models import (
+from database import get_db
+from models.models import (
     Usuario, InscripcionAlumno, CalificacionRegular, CuadernoNotificacion,
     ChatTutorIA, Tarea, AsignacionDocente, Materia, Curso, Asistencia,
     TipoNotificacionEnum, RolMensajeEnum, VinculoFamiliar,
 )
-from app.config import settings
-from app.templating import templates
-from app.services import tutor_ia as ia_service
-from app.services.notificaciones import despachar_notificacion
+from config import settings
+from templating import templates
+from services import tutor_ia as ia_service
+from services.notificaciones import despachar_notificacion
 
 router = APIRouter(prefix="/alumno", tags=["alumno"])
 
@@ -118,6 +118,7 @@ async def dashboard(request: Request, db: AsyncSession = Depends(get_db)):
     notificaciones_pendientes = int(result_notif.scalar() or 0)
 
     return templates.TemplateResponse(
+        request,
         "alumno/dashboard.html",
         {
             "request": request,
@@ -150,6 +151,7 @@ async def cuaderno(request: Request, db: AsyncSession = Depends(get_db)):
     notificaciones = result.scalars().all()
 
     return templates.TemplateResponse(
+        request,
         "alumno/cuaderno.html",
         {
             "request": request,
@@ -182,6 +184,7 @@ async def tutor_ia_page(
     historial = result.scalars().all()
 
     return templates.TemplateResponse(
+        request,
         "alumno/tutor_ia.html",
         {
             "request": request,
@@ -370,6 +373,7 @@ async def reporte_bullying_page(
 ):
     alumno = require_alumno(request)
     return templates.TemplateResponse(
+        request,
         "alumno/reportar_bullying.html",
         {
             "request": request,
@@ -465,6 +469,7 @@ async def tareas(request: Request, db: AsyncSession = Depends(get_db)):
 
     hoy = date.today()
     return templates.TemplateResponse(
+        request,
         "alumno/tareas.html",
         {
             "request": request,
@@ -498,6 +503,7 @@ async def mis_notas(request: Request, db: AsyncSession = Depends(get_db)):
     inscripciones = result.scalars().all()
 
     return templates.TemplateResponse(
+        request,
         "alumno/mis_notas.html",
         {
             "request": request,

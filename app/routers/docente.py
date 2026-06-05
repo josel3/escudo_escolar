@@ -14,15 +14,15 @@ from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func, and_, or_
 from sqlalchemy.orm import selectinload
 
-from app.database import get_db
-from app.models.models import (
+from database import get_db
+from models.models import (
     Usuario, AsignacionDocente, Materia, Curso, InscripcionAlumno,
     CalificacionRegular, CuadernoNotificacion, Tarea, Asistencia,
     TipoNotificacionEnum, AsistenciaEstadoEnum, VinculoFamiliar,
 )
-from app.config import settings
-from app.templating import templates
-from app.services.notificaciones import despachar_notificacion
+from config import settings
+from templating import templates
+from services.notificaciones import despachar_notificacion
 
 router = APIRouter(prefix="/docente", tags=["docente"])
 
@@ -106,9 +106,9 @@ async def dashboard(
     tareas_proximas = result_tareas.scalars().all()
 
     return templates.TemplateResponse(
+             request,
         "docente/dashboard.html",
         {
-            "request": request,
             "docente": docente,
             "asignaciones": asignaciones,
             "alumnos_riesgo": alumnos_riesgo,
@@ -181,9 +181,9 @@ async def carga_notas_page(
                 notas_existentes[nota.inscripcion_id] = float(nota.nota)
 
     return templates.TemplateResponse(
+         request,
         "docente/carga_notas.html",
         {
-            "request": request,
             "docente": docente,
             "asignaciones": asignaciones,
             "asignacion_sel": asignacion_sel,
@@ -465,9 +465,9 @@ async def asistencia_page(
             asistencias_hoy[a.id] = asist.estado.value if asist else "PRESENTE"
 
     return templates.TemplateResponse(
+             request,
         "docente/asistencia.html",
         {
-            "request": request,
             "docente": docente,
             "cursos": cursos,
             "curso_id_sel": curso_id,
@@ -579,9 +579,9 @@ async def tareas_page(
     tareas = result_tareas.scalars().all()
 
     return templates.TemplateResponse(
+            request,
         "docente/tareas.html",
         {
-            "request": request,
             "docente": docente,
             "asignaciones": asignaciones,
             "tareas": tareas,
@@ -696,9 +696,9 @@ async def cuaderno_page(
     alumnos = [row[0] for row in result_alumnos.all()]
 
     return templates.TemplateResponse(
+            request,
         "docente/cuaderno.html",
         {
-            "request": request,
             "docente": docente,
             "notificaciones": notificaciones,
             "alumnos": alumnos,
@@ -782,9 +782,9 @@ async def reuniones_page(
     solicitudes = result.scalars().all()
 
     return templates.TemplateResponse(
+             request,
         "docente/reuniones.html",
         {
-            "request": request,
             "docente": docente,
             "solicitudes": solicitudes,
             "success": success,

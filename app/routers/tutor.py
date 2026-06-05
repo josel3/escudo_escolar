@@ -11,13 +11,13 @@ from fastapi.responses import HTMLResponse, RedirectResponse
 from sqlalchemy.ext.asyncio import AsyncSession
 from sqlalchemy import select, func
 from sqlalchemy.orm import selectinload
-from app.templating import templates
-from app.database import get_db
-from app.models.models import (
+from templating import templates
+from database import get_db
+from models.models import (
     Usuario, VinculoFamiliar, InscripcionAlumno, CalificacionRegular,
     CuadernoNotificacion, Asistencia, AsignacionDocente, Materia,
 )
-from app.config import settings
+from config import settings
 
 router = APIRouter(prefix="/tutor", tags=["tutor"])
 
@@ -51,6 +51,7 @@ async def dashboard(
 
     if not alumnos:
         return templates.TemplateResponse(
+            request,
             "tutor/dashboard.html",
             {"request": request, "tutor": tutor, "alumnos": [], "alumno_sel": None},
         )
@@ -125,9 +126,9 @@ async def dashboard(
     firmas_pendientes = int(result_pend.scalar() or 0)
 
     return templates.TemplateResponse(
+        request,
         "tutor/dashboard.html",
         {
-            "request": request,
             "tutor": tutor,
             "alumnos": alumnos,
             "alumno_sel": alumno_sel,
@@ -161,6 +162,7 @@ async def cuaderno(
     notificaciones = result.scalars().all()
 
     return templates.TemplateResponse(
+        request,
         "tutor/cuaderno.html",
         {
             "request": request,
@@ -235,9 +237,9 @@ async def solicitar_reunion_page(
                 docentes.append(asig.docente)
 
     return templates.TemplateResponse(
+        request,
         "tutor/solicitar_reunion.html",
         {
-            "request": request,
             "tutor": tutor,
             "docentes": docentes,
             "success": success,

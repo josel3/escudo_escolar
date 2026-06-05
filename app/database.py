@@ -53,7 +53,7 @@ async def get_db() -> AsyncSession:
 
 async def init_db():
     """Crea todas las tablas si no existen (desarrollo)."""
-    from app.models.models import Base
+    from models.models import Base
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
 
