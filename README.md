@@ -1,7 +1,9 @@
 # EscudoEscolar
 
-Sistema integral de acompañamiento y bienestar escolar (EdTech argentina).  
-**Stack:** FastAPI · Jinja2 SSR · MySQL · enfoque **No-JS First**.
+Sistema integral de acompañamiento y bienestar escolar, EdTech.
+**Stack:** FastAPI · Jinja2 SSR · MySQL.
+
+Probalo en [https://escudoescolar-production.up.railway.app](https://escudoescolar-production.up.railway.app)
 
 ## Módulos
 
@@ -39,7 +41,7 @@ python scripts/seed.py
 python run.py
 ```
 
-Abrí [http://localhost:8000](http://localhost:8000)
+Abrí http://localhost:8000
 
 ## Usuarios de demostración
 
